@@ -68,3 +68,5 @@ if __name__ == '__main__':
 	    generated_text = generate(prompt, n=8)
 	    print(f"Prompt: {prompt}")
 	    print(generated_text)
+
+	    
