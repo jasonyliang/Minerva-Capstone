@@ -6,6 +6,8 @@ from _dber.pg_orm import Base
 我們在這裡設定有關數據庫的設定
 如果要更改存取的數據庫的話，請在此處更改
 spider跟parser所存取的資料會根據這個來定義
+
+This is the config page, where I define the location in which the crawler will save to the database
 '''
 
 import psycopg2

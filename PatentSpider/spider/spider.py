@@ -1,6 +1,6 @@
 '''
 Task 1: Conduct crawling
-這是程式中爬蟲的部分 (與網頁連結的部分)
+This is the main code that defines the task for crawling
 '''
 from _dber.config import session
 from _dber.pg_orm import Content
@@ -33,6 +33,7 @@ class USPTOSpider(Task):  # give ur spider a cute name ;) 給spider一個好聽�
         links = self.retrieve_urls(url)  # all links
         for patent in links:
             # check if the patent already exist in our database
+            # we query the database to see if the same url (patent) is already crawled
             sess = session()
             added = sess.query(Content).filter_by(url=patent).first()
             sess.commit()
@@ -42,6 +43,8 @@ class USPTOSpider(Task):  # give ur spider a cute name ;) 給spider一個好聽�
             else:
                 # pass it to the parser
                 params['patent_url'] = patent
+                # this creates a new parser job that parses with the specific patent
+                # so the mrq worker for parser can take up the task and parse
                 self.parser_job(params,
                                 fpath=params['parseTask'],
                                 nqueue=params['parsequeue'])
@@ -50,6 +53,7 @@ class USPTOSpider(Task):  # give ur spider a cute name ;) 給spider一個好聽�
     def run_wrapped(self, params):
         """ 
         Wrap all calls to tasks in init & safety code. 
+        Similar to the wrap code in task executer
         """
         try:
             return self.run(params)
@@ -60,6 +64,12 @@ class USPTOSpider(Task):  # give ur spider a cute name ;) 給spider一個好聽�
             print(e)
 
     def retrieve_urls(self, url):
+        '''
+        Given a web link, this function goes through
+        the HTML of the web link and retrieve needed information
+        In this case, we want to retrieve all of the patent documents from
+        the query page
+        '''
         ua = UserAgent()
         headers = {
             "user-agent": ua.random

@@ -8,9 +8,10 @@ metadata = Base.metadata
 two base tables:
 PageSource -- store results from spider
 Content -- store results from parser
-本程式用的表將於此處定義
-Base class中每一行是一個Column
-根據需求來改變及增加表
+Since we only need the final data and not the page source
+I decided to not have a PageSource Table that would take up space.
+In the future, if we need more information from the web pages (if we want additional text data)
+We can activate this table and save entire HTML pages for future parsing
 '''
 # modify tables according to the information needed to be retrieved
 

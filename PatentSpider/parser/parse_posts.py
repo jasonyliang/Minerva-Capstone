@@ -29,13 +29,18 @@ class USPTOParser(Task):  # make sure you give it a name :) 記得給parser一�
         '''
         Run parser
         parser任務主要是負責解析spider爬下來的源碼，並將其存入數據庫
+        Parser is in charge of parsing patent data from the links crawled by the
+        spider/crawler
         '''
+        # we retrieve the patent url from the task arguments 
+        # this was added from the crawler
         url = params['patent_url']
         # retrieve info
         info = self.retrieve_info(url)
         for cnt in info:
             inserted = self.insertData(cnt)
-
+            # if the saving to the database didn't work, we try again
+            # by requeueing the job
             if not inserted:
                 queue_job(params['parseTask'],
                           params,

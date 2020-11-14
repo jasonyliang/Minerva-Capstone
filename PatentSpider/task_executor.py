@@ -23,6 +23,8 @@ sys.path.insert(1, os.path.abspath(os.getcwd()+'../../../../'))
 class Execute_Crawl(Task):
     '''
     Execution of two tasks: crawl and parse
+    This is the main task executed by MRQ, the job of the task executor is 
+    to tell MRQ workers to work on spider and parser tasks
     '''
 
     def __init__(self):
@@ -31,8 +33,7 @@ class Execute_Crawl(Task):
     def exec_push_work(self, url):
         # import subprocess
         # modify arguments
-        # 這些是會傳下去給spider的函數 除了spider需要用的之外，還包括所有栈名以及其任務的路徑
-        # 如果有更改栈名請於此更改
+        # Modify the arguments here to the name of each task (the spider and the parser)
         args = {
             'url': url,
             'spiderTask': 'spider.spider.USPTOSpider',
@@ -52,17 +53,20 @@ class Execute_Crawl(Task):
         '''
         # 我們在這裡開始分發任務
         # assign the CPC classification here
-        # classification = "H01L"
+        # classification = "H01L" 
+        # As specified in the "Methods," we will be crawling data from the H01L CPC class
         start_pages = 1001
         end_pages = 2000  # get first 1000 pages of patents
         for page in range(start_pages, end_pages+1):
+            # this is the query string that helps us query the patents 
+            # page allows us to go to each page of the query results and crawl those results
             url = f"http://patft.uspto.gov/netacgi/nph-Parser?Sect1=PTO2&Sect2=HITOFF&u=%2Fnetahtml%2FPTO%2Fsearch-adv.htm&r=0&f=S&l=50&d=PTXT&OS=CPCL%2FH01L&RS=CPCL%2FH01L&Query=CPCL%2FH01L&TD=439972&Srch1=H01L.CPCL.&NextList{page}=Next+50+Hits"
             self.exec_push_work(url)
 
     def run_wrapped(self, params):
         """
         Wrap all calls to tasks in init & safety code.
-        這是保險，如果執行task_executor有意外這裡會重新啟動
+        If there's any error in the task executor, this will help rerun task executor and try again
         """
         try:
             return self.run(params)
@@ -75,7 +79,7 @@ class Execute_Crawl(Task):
     def requeue_job(self, params, fpath=None, nqueue=None):
         '''
         requeue an unfinished job
-        run_wrapped的helper function
+        helper function for run_wrapped()
         '''
         log.warning('Job Failed, re-queue...%s' % params['url'])
         queue_job(fpath, params, queue=nqueue)
