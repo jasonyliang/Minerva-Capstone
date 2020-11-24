@@ -1,0 +1,13 @@
+# Patent Claim and Abstract Generation: Web Crawler
+## Description
+I collected data from the United States Patent and Trademark Office (USPTO) Patent Full-Text and Image Database (PatFT) which contains all of the patents ever filed and granted in the US since 1976 (for text data). Patents in the database are classified using the Cooperative Patent Classification (CPC), a classification system jointly developed by the USPTO and the European Patent Office (EPO) to improve the ease of patent research. Using the classification, patents are grouped by their subjects matter.
+
+### Libaries Used
+To build the crawler, I relied on the Python library Requests to retrieve raw HTML files from the query results of the USPTO patent database. By accessing the query page and inputting a query string including fields such as the CPC class and dates, the database returns a list of pages that includes the search results. Each page includes links to patent documents that contain patent text information in the form of an HTML page. Using Requests and other crawler libraries, I am able to access the pages and parse through the raw HTML to retrieve the text data I need. A parser task is then required to parse through the text data before the data is saved in a database. 
+
+The jobs (the crawler, the parser, and saving to the database) are assigned and scheduled using MRQ, a distributed task queue for Python built on top of mongo, Redis, and Gevent. Instead of writing a single script that does all of the tasks together and running the script on a machine like a traditional crawler or relying on frameworks like Scrapy, I find using MRQ to automate my job scheduling superior in two respects. Compared to a simple script, MRQ abstracts the tasks (with a Task class), which allows users to create their own tasks and abstract them instead of building and calling functions over and over again. Abstractions also allow readers or users of the crawler to better understand how the code comes together. Moreover, as MRQ is not a tool that serves specifically for web crawlers, it offers a much greater degree of flexibility than frameworks such as Scrapy. I can introduce methods that modify the text data within MRQ (in the parser task) before storing the data, rather than having to save all of the raw text in the database and processing it afterward.
+
+For specifics about MRQ, please visit their github repo [here](https://github.com/pricingassistant/mrq) or their documentation [here](https://mrq.readthedocs.io/en/latest/)
+
+The Pipeline of the current crawler is as follows:
+![Pipeline](../images/WebCrawlingPipeline.jpg)
