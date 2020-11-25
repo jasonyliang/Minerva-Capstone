@@ -11,3 +11,75 @@ For specifics about MRQ, please visit their github repo [here](https://github.co
 
 The Pipeline of the current crawler is as follows:
 ![Pipeline](../images/WebCrawlingPipeline.jpg)
+
+### Set up
+Make sure redis and mongod is up and running
+```
+redis-server &
+```
+```
+cd /usr/local/mongodb/bin
+sudo ./mongod
+```
+
+Beware of caches!! (clear pycaches)
+
+
+Once everything is set up, you can open up the mrq dashboard:
+```
+mrq-dashboard &
+```
+Where you can observe queues and workers on http://0.0.0.0:5555/ (by default)
+
+Run:
+```
+mrq-worker &
+```
+To set up default worker, who can assist in canceling unwanted jobs or requeue manually on the dashboard
+
+After everything is set up, you will be able to run mrq commands:
+```
+mrq-run --queue task *params
+```
+to enqueue tasks
+
+```
+mrq-worker queue
+```
+to start worker 
+
+
+Check working workers:
+```
+ps -ef|grep mrq
+```
+
+For the Patent Crawler, we need to start the workers in the specific tasks, this is available in the `command.sh` file:
+```
+mrq-worker taskexecutor --greenlet 1 & mrq-worker crawl_patents --greenlet 3 & mrq-worker parse_patents --greenlet 5 &
+```
+`--greenlet` specify the number of workers, the more we have the more are working on the specific task queue
+
+To specify the type of patents you want to crawl, you need to specify the query string to the USPTO database. This is located in the `task_exectutor.py`. For example, if I wanted to crawl the latest patents in CPC class H01L:
+```
+def run(self, params):
+    '''
+    Enqueue spider jobs
+    '''
+    # 我們在這裡開始分發任務
+    # assign the CPC classification here
+    # classification = "H01L" 
+    # As specified in the "Methods," we will be crawling data from the H01L CPC class
+    start_pages = 1
+    end_pages = 1000  # get first 1000 pages of patents
+    for page in range(start_pages, end_pages+1):
+        # this is the query string that helps us query the patents 
+        # page allows us to go to each page of the query results and crawl those results
+        url = f"http://patft.uspto.gov/netacgi/nph-Parser?Sect1=PTO2&Sect2=HITOFF&u=%2Fnetahtml%2FPTO%2Fsearch-adv.htm&r=0&f=S&l=50&d=PTXT&OS=CPCL%2FH01L&RS=CPCL%2FH01L&Query=CPCL%2FH01L&TD=439972&Srch1=H01L.CPCL.&NextList{page}=Next+50+Hits"
+        self.exec_push_work(url)
+```
+Here, the query string becomes:
+```
+http://patft.uspto.gov/netacgi/nph-Parser?Sect1=PTO2&Sect2=HITOFF&u=%2Fnetahtml%2FPTO%2Fsearch-adv.htm&r=0&f=S&l=50&d=PTXT&OS=CPCL%2FH01L&RS=CPCL%2FH01L&Query=CPCL%2FH01L&TD=439972&Srch1=H01L.CPCL.&NextList{page}=Next+50+Hits
+```
+Which allows us to query H01L. We can modify the query string to crawl other types of data. Another way of finding the right query string is to go to the USPTO database, enter the queries and copy the url that results from it. The last part of the string (`&NextList{page}=Next+50+Hits`) allows us to query multiple pages. The for loop allows us to crawl pages after the first page and get as many patents as we need.
