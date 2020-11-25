@@ -60,6 +60,11 @@ mrq-worker taskexecutor --greenlet 1 & mrq-worker crawl_patents --greenlet 3 & m
 ```
 `--greenlet` specify the number of workers, the more we have the more are working on the specific task queue
 
+Once this runs, just sit back an let the crawler do its magic. You can also monitor the progress in the mrq dashboard.
+
+The dashboard looks like this:
+![Dashboard](../images/MRQDashboard.jpg)
+
 To specify the type of patents you want to crawl, you need to specify the query string to the USPTO database. This is located in the `task_exectutor.py`. For example, if I wanted to crawl the latest patents in CPC class H01L:
 ```
 def run(self, params):
