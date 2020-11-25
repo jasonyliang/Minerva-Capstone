@@ -6,9 +6,10 @@ Patent is a form of intellectual property that aims to protect an invention deve
 
 ### Description of the Github Repository
 This repository includes the technical components necessary to enable the project. Each folder in this project represents a particular component of the project and will be referred to in the write-up component of the project. The folders are as follows:
-* [Data Processing Related](./Data%20Processing%20Related)
+
 * [Tutorials](./Tutorials)
 * [Web Crawler](./PatentSpider)
+* [Data Processing Related](./Data%20Processing%20Related)
 * [Patent Claim/Abstract Generator](./Patent%20Claim%20Generator)
 * [BERT Text Classification](./BERT%20Text%20Classification)
 
