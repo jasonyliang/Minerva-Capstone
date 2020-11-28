@@ -80,4 +80,4 @@ def choose_from_top(probs, n=5):
     token_id = ind[choice][0]
     return int(token_id)
 ```
-For more information, please take a look at a blog I wrote on patent claim generation: ![blog](https://jason-liang.hashnode.dev/generating-fake-patents-just-the-patent-claim-part)
+For more information, please take a look at a blog I wrote on patent claim generation: [blog](https://jason-liang.hashnode.dev/generating-fake-patents-just-the-patent-claim-part)
