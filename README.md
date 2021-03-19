@@ -12,8 +12,9 @@ This repository includes the technical components necessary to enable the projec
 * [Data Processing Related](./Data%20Processing%20Related)
 * [Patent Claim/Abstract Generator](./Patent%20Claim%20Generator)
 * [BERT Text Classification](./BERT%20Text%20Classification)
+* [Experiments](./Experiments)
 
-Data Processing Related folder includes all code related to pre-processing of the Data. The tutorials are tutorials I consulted to learn more about how to train similar models, these are indications of the work I put into to learn more about the field and how best to implement these models. The web crawler is the first component of the project. It includes all the code of the web crawler I built to collect patent data from the USPTO database. The Patent Claim/Abstract Generator includes the notebooks that fine-tune patent claims and abstracts. This is the bulk of the project and will include code used for the experiments of the project. Finally, the BERT Text Classification includes the code for pre-processing and training a text classifier for real and fake patent data. This classifier is used as a metric to evaluate how well the text generators perform.
+Data Processing Related folder includes all code related to pre-processing of the Data. The tutorials are tutorials I consulted to learn more about how to train similar models, these are indications of the work I put into to learn more about the field and how best to implement these models. The web crawler is the first component of the project. It includes all the code of the web crawler I built to collect patent data from the USPTO database. The Patent Claim/Abstract Generator includes the notebooks that fine-tune patent claims and abstracts. This is the bulk of the project and will include code used for the experiments of the project. The BERT Text Classification includes the code for pre-processing and training a text classifier for real and fake patent data. This classifier is used as a metric to evaluate how well the text generators perform. Finally, the Experiments section includes all the code for the experiments.
 
 
 
